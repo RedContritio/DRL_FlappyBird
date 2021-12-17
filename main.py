@@ -1,5 +1,6 @@
 import pygame
 import sys
+from game import Game
 from objects.background import Background
 
 from objects.bird import Bird
@@ -10,8 +11,10 @@ WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = (640, 480)
 screen = pygame.display.set_mode(WINDOW_SIZE)
 clock = pygame.time.Clock()
 
+game = Game(WINDOW_SIZE)
+
 # pipes = [Pipe((0, 0), (60, 100))]
-bird = Bird((200, 200))
+bird = Bird(game.bird_position)
 background = Background(WINDOW_SIZE)
 curx = 0
 
@@ -21,10 +24,13 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            game.click()
 
     curx += 1
-    bird.update()
-    background.update(curx)
+    game.update()
+    bird.update(game)
+    background.update(game)
 
     screen.fill((0, 0, 0))
     background.draw(screen)

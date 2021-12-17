@@ -1,5 +1,6 @@
 from typing import Tuple
 import pygame
+from game import Game
 from objects.ground import Ground
 
 class Background(pygame.sprite.Group):
@@ -10,6 +11,6 @@ class Background(pygame.sprite.Group):
         self.add(self.ground)
         self.frame = 0
 
-    def update(self, curx: int):
-        self.ground.update(curx)
+    def update(self, game: Game):
+        self.ground.update(game.camera_rect[0])
         self.frame += 1
