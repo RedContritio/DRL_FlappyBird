@@ -6,13 +6,13 @@ from objects.bird import Bird
 from objects.pipe import Pipe
 
 pygame.init()
-size = WINDOW_WIDTH, WINDOW_HEIGHT = (640, 480)
-screen = pygame.display.set_mode(size)
+WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = (640, 480)
+screen = pygame.display.set_mode(WINDOW_SIZE)
 clock = pygame.time.Clock()
 
 # pipes = [Pipe((0, 0), (60, 100))]
 bird = Bird((200, 200))
-background = Background(WINDOW_WIDTH)
+background = Background(WINDOW_SIZE)
 curx = 0
 
 while True:
@@ -26,7 +26,7 @@ while True:
     bird.update()
     background.update(curx)
 
-    screen.fill((255, 255, 255))
+    screen.fill((0, 0, 0))
     background.draw(screen)
     screen.blit(bird.image, bird.position)
     # for p in pipes:

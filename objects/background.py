@@ -1,11 +1,12 @@
+from typing import Tuple
 import pygame
 from objects.ground import Ground
 
 class Background(pygame.sprite.Group):
-    def __init__(self, width: int) -> None:
+    def __init__(self, window_size: Tuple[int]) -> None:
         super().__init__()
 
-        self.ground = Ground(width)
+        self.ground = Ground(window_size)
         self.add(self.ground)
         self.frame = 0
 
