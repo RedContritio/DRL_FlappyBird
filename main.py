@@ -1,7 +1,7 @@
 import pygame
 import sys
 from game import Game
-from objects.background import Background
+from objects.background import BACKGROUND_COLOR, Background
 
 from objects.bird import Bird
 from objects.pipe import Pipe
@@ -32,7 +32,7 @@ while True:
     bird.update(game)
     background.update(game)
 
-    screen.fill((0, 0, 0))
+    screen.fill(BACKGROUND_COLOR)
     background.draw(screen)
     screen.blit(bird.image, bird.position)
     # for p in pipes:

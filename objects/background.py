@@ -3,6 +3,8 @@ import pygame
 from game import Game
 from objects.ground import Ground
 
+BACKGROUND_COLOR = (0, 159, 255)
+
 class Background(pygame.sprite.Group):
     def __init__(self, window_size: Tuple[int]) -> None:
         super().__init__()
