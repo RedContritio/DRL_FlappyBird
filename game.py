@@ -97,13 +97,15 @@ class Game:
                 self.bird_world_position[i] += self.bird_speed[i]
             self.bird_speed[1] += WORLD_GRAVITY
             self.bird_rotate = math.atan2(self.bird_speed[1], self.bird_speed[0] * 2) # less rotate angle
-            if self.checkCollision():
-                self.status = GAME_STATE_END
             passed_pipes = [p for p in self.pipes if p.right < self.bird_world_position[0]]
             if len(passed_pipes) > 0:
                 self.score = passed_pipes[-1].id + 1
                 if self.score > self.best_score:
                     self.best_score = self.score
+            if self.checkCollision():
+                self.status = GAME_STATE_END
+                if len(self.operations) > 0:
+                    self.saveOperations()
             self.operations.append(0)
 
         self.updatePipe()
@@ -111,8 +113,6 @@ class Game:
     
     def reset(self, seed = getRandomSeed()):
         AbstractPipe.g_id = 0
-        if len(self.operations) > 0:
-            self.saveOperations()
         self.seed = seed
         self.prng.seed(self.seed)
         self.status = GAME_STATE_INIT
