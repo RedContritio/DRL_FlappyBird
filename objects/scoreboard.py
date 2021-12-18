@@ -14,5 +14,5 @@ class ScoreBoard(pygame.sprite.Sprite):
     def update(self, game):
         if game.score != self.score:
             self.score = game.score
-            image = make_scoreboard(self.window_size, self.score, 0)
+            image = make_scoreboard(self.window_size, self.score, game.best_score)
             self.image = pygame.image.frombuffer(image.tobytes(), image.shape[:2][::-1], 'RGBA')

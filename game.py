@@ -18,7 +18,7 @@ GAME_STATE_RUNNING = 1
 GAME_STATE_END = 2
 
 PIPE_WIDTH = 60
-PIPE_SPACING = 120
+PIPE_SPACING = 150
 
 PIPE_SAFE_MARGIN = 2 * (PIPE_WIDTH + PIPE_SPACING)
 
@@ -90,13 +90,14 @@ class Game:
             passed_pipes = [p for p in self.pipes if p.right < self.bird_world_position[0]]
             if len(passed_pipes) > 0:
                 self.score = passed_pipes[-1].id + 1
+                if self.score > self.best_score:
+                    self.best_score = self.score
 
         self.updatePipe()
         self.fitCamera()
     
     def reset(self):
-        if self.score > self.best_score:
-            self.best_score = self.score
+        AbstractPipe.g_id = 0
         self.score = 0
         self.bird_speed = [BIRD_SPEED, 0]
         self.bird_world_position = [0, self.window_size[1] // 2]

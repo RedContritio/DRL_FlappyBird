@@ -19,6 +19,4 @@ def get_base(width: int):
         l = realwidth - p
         nimg[:, p:] = img[:, :l]
 
-    print(img.shape)
-    print(nimg.shape)
     return nimg

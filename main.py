@@ -56,6 +56,8 @@ while True:
         if failed == None:
             failed = FailedScreen(WINDOW_SIZE, game.score, game.best_score)
         screen.blit(failed.image, failed.position)
+    else:
+        failed = None
 
     pygame.display.flip()
 
