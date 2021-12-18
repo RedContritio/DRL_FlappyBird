@@ -161,7 +161,7 @@ class Game:
             self.bird_speed[1] += BIRD_CLICK_SPEED
             self.operations[-1] += 1
         if self.status == GAME_STATE_INIT:
-            self.status = GAME_STATE_RUNNING
+            self.start()
         if self.status == GAME_STATE_END:
             self.reset()
             self.status = GAME_STATE_INIT
@@ -174,8 +174,11 @@ class Game:
     def dead(self):
         return self.status == GAME_STATE_END
 
+    def start(self):
+        assert(self.status == GAME_STATE_INIT)
+        self.status = GAME_STATE_RUNNING
+
     def saveOperations(self):
-        
         filename = time.strftime(f'%Y_%m_%d_%M_%I_%S__score__{self.score}.log', time.localtime())
         with open(os.path.join('log', 'actions', filename), 'w') as f:
             print(self.seed, file=f)

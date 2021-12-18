@@ -1,6 +1,6 @@
 import pygame
 import sys
-from config import WINDOW_SIZE
+from config import WINDOW_SIZE, FPS
 from game import Game
 from objects.failedscreen import FailedScreen
 from objects.background import BACKGROUND_COLOR, Background
@@ -31,7 +31,7 @@ def getLowerPipe(p, game: Game):
     return Pipe((pos[0] - game.camera_rect[0], pos[1]), p.lowerSize, True)
 
 while True:
-    clock.tick(30)
+    clock.tick(FPS)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
