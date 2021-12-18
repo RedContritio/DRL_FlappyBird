@@ -1,5 +1,9 @@
+import math
 from typing import Tuple
-from imgs.bird import DEFAULT_BIRD_HEIGHT
+
+import numpy
+from imgs.bird import DEFAULT_BIRD_HEIGHT, DEFAULT_BIRD_WIDTH
+from imgs.pipe import PIPE_HAT_HEIGHT
 
 from objects.ground import GROUND_HEIGHT
 
@@ -13,13 +17,62 @@ GAME_STATE_INIT = 0
 GAME_STATE_RUNNING = 1
 GAME_STATE_END = 2
 
+PIPE_WIDTH = 60
+PIPE_SPACING = 120
+
+PIPE_SAFE_MARGIN = 2 * (PIPE_WIDTH + PIPE_SPACING)
+
+PIPE_INTERVAL_MIN_HEIGHT = 60
+
+# less means harder
+GAME_DIFFICULT = 2
+
+class AbstractPipe:
+    g_id = 0
+
+    def __init__(self, x: int, interval_y: int, interval_height: int, window_height: int) -> None:
+        self.id = AbstractPipe.g_id
+        AbstractPipe.g_id += 1
+
+        self.width = PIPE_WIDTH
+        self.x = x
+        self.interval_y = interval_y
+        self.interval_height = interval_height
+        self.window_height = window_height
+
+    @property
+    def upperPosition(self):
+        return (self.x, 0)
+    
+    @property
+    def upperSize(self):
+        return (self.width, self.interval_y)
+    
+    @property
+    def lowerPosition(self):
+        return (self.x, self.interval_y + self.interval_height)
+    
+    @property
+    def lowerSize(self):
+        return (self.width, self.window_height - self.lowerPosition[1])
+
+    @property
+    def right(self):
+        return self.x + self.width
+
+    def hit(self, y: int):
+        if y < self.interval_y or y >= self.interval_y + self.interval_height:
+            return True
+        return False
+
 class Game:
     def __init__(self, window_size: Tuple[int]) -> None:
         self.window_size = window_size
         self.bird_xrange = [int(BIRD_LEFT_POSITION * window_size[0]), int(BIRD_RIGHT_POSITION * window_size[0])]
         self.status = GAME_STATE_INIT
+        self.score = 0
+        self.best_score = 0
         self.reset()
-        self.pipes = []
 
     def fitCamera(self):
         if self.bird_world_position[0] < self.camera_rect[0] + self.bird_xrange[0]:
@@ -34,22 +87,53 @@ class Game:
             self.bird_speed[1] += WORLD_GRAVITY
             if self.checkCollision():
                 self.status = GAME_STATE_END
+            passed_pipes = [p for p in self.pipes if p.right < self.bird_world_position[0]]
+            if len(passed_pipes) > 0:
+                self.score = passed_pipes[-1].id + 1
 
+        self.updatePipe()
         self.fitCamera()
     
     def reset(self):
+        if self.score > self.best_score:
+            self.best_score = self.score
+        self.score = 0
         self.bird_speed = [BIRD_SPEED, 0]
         self.bird_world_position = [0, self.window_size[1] // 2]
         self.camera_rect = [0, 0, self.window_size[0], self.window_size[1]]
+        self.pipes = [self.makeRandomPipe(self.bird_position[0] + PIPE_SAFE_MARGIN, self.window_size[1], PIPE_INTERVAL_MIN_HEIGHT * GAME_DIFFICULT)]
         self.fitCamera()
+
+    def updatePipe(self):
+        l, r = self.camera_rect[0] - PIPE_SAFE_MARGIN, self.camera_rect[0] + self.camera_rect[2] + PIPE_SAFE_MARGIN
+        self.pipes = [p for p in self.pipes if p.x >= l]
+        last = self.pipes[-1]
+        while last.x + (PIPE_WIDTH + PIPE_SPACING) < r:
+            pipe = (self.makeRandomPipe(last.x + (PIPE_SPACING + PIPE_WIDTH), self.window_size[1] - GROUND_HEIGHT, PIPE_INTERVAL_MIN_HEIGHT * GAME_DIFFICULT))
+            self.pipes.append(pipe)
+            last = self.pipes[-1]
+
+    def makeRandomPipe(self, x: int, full_height: int, expect_interval_height: int):
+        k = numpy.random.randint(PIPE_HAT_HEIGHT, full_height - expect_interval_height - PIPE_HAT_HEIGHT)
+        return AbstractPipe(x, k, expect_interval_height, self.window_size[1])
 
     @property
     def bird_position(self):
         return (self.bird_world_position[0] - self.camera_rect[0], self.bird_world_position[1] - self.camera_rect[1])
 
     def checkCollision(self):
-        if self.bird_world_position[1] <= 0 or self.bird_world_position[1] + DEFAULT_BIRD_HEIGHT >= self.window_size[1] - GROUND_HEIGHT:
+        bird_l, bird_r = self.bird_world_position[0], self.bird_world_position[0] + DEFAULT_BIRD_WIDTH
+        bird_t, bird_b = self.bird_world_position[1], self.bird_world_position[1] + DEFAULT_BIRD_HEIGHT
+        if bird_t <= 0 or bird_b >= self.window_size[1] - GROUND_HEIGHT:
             return True
+        
+        for p in self.pipes:
+            if bird_r in range(p.x, p.right) or bird_l in range(p.x, p.right):
+                if p.hit(bird_t) or p.hit(bird_b):
+                    return True
+        
+        return False
+
 
     def click(self):
         if self.status == GAME_STATE_RUNNING:
@@ -65,4 +149,7 @@ class Game:
     @property
     def running(self):
         return self.status == GAME_STATE_RUNNING
-        
+    
+    @property
+    def dead(self):
+        return self.status == GAME_STATE_END
