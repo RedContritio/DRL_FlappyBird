@@ -75,7 +75,7 @@ def getRandomSeed():
     return ''.join(random.sample('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 16))
 
 class Game:
-    def __init__(self, window_size: Tuple[int]) -> None:
+    def __init__(self, window_size: Tuple[int], replay_flag: bool = False) -> None:
         self.window_size = window_size
         self.bird_xrange = [int(BIRD_LEFT_POSITION * window_size[0]), int(BIRD_RIGHT_POSITION * window_size[0])]
         self.status = GAME_STATE_INIT
@@ -84,6 +84,7 @@ class Game:
         self.bird_rotate = 0
         self.operations = []
         self.prng = PRNG()
+        self.replay_flag = replay_flag
         self.reset()
 
     def fitCamera(self):
@@ -121,7 +122,7 @@ class Game:
         self.bird_speed = [BIRD_SPEED, 0]
         self.bird_world_position = [0, self.window_size[1] // 2]
         self.camera_rect = [0, 0, self.window_size[0], self.window_size[1]]
-        self.pipes = [self.makeRandomPipe(self.bird_position[0] + PIPE_SAFE_MARGIN, self.window_size[1], PIPE_INTERVAL_MIN_HEIGHT * GAME_DIFFICULT)]
+        self.pipes = [self.makeRandomPipe(self.bird_position[0] + PIPE_SAFE_MARGIN, self.window_size[1] - GROUND_HEIGHT, PIPE_INTERVAL_MIN_HEIGHT * GAME_DIFFICULT)]
         self.fitCamera()
 
     def updatePipe(self):
@@ -169,6 +170,10 @@ class Game:
             self.status = GAME_STATE_INIT
 
     @property
+    def ready(self):
+        return self.status == GAME_STATE_INIT
+
+    @property
     def running(self):
         return self.status == GAME_STATE_RUNNING
     
@@ -181,6 +186,8 @@ class Game:
         self.status = GAME_STATE_RUNNING
 
     def saveOperations(self):
+        if self.replay_flag:
+            return
         filename = time.strftime(f'%Y_%m_%d_%M_%I_%S__score__{self.score}.log', time.localtime())
         with open(os.path.join('log', 'actions', filename), 'w') as f:
             print(self.seed, file=f)

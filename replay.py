@@ -18,6 +18,11 @@ def timerEvent():
     pixmap = QtGui.QPixmap.fromImage(image)
     label_image.setPixmap(pixmap)
 
+    if game.ready:
+        game.start()
+    else:
+        game.update()
+
 def clickEvent(e: QtGui.QMouseEvent):
     print('click')
     pass
