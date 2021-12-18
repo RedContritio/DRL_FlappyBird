@@ -44,8 +44,6 @@ def clickEvent(e: QtGui.QMouseEvent):
     if game.dead:
         game.reset(seed)
 
-print(SAVE_LISTS)
-
 app = QApplication(sys.argv)
 
 label_image = QtWidgets.QLabel()

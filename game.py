@@ -114,7 +114,6 @@ class Game:
         if len(self.operations) > 0:
             self.saveOperations()
         self.seed = seed
-        print(self.seed)
         self.prng.seed(self.seed)
         self.status = GAME_STATE_INIT
         self.operations = []

@@ -1,3 +1,4 @@
+import math
 from typing import List, Tuple
 import cv2
 from game import AbstractPipe, Game
@@ -77,7 +78,7 @@ def renderbird(img, game: Game):
         renderbird.frame = 0
     i = (renderbird.frame // BIRD_FRAME_LENGTH) % len(raw_birds)
     source = raw_birds[i] if game.running and game.bird_speed[1] < 0 else raw_birds[1]
-    dst = rotate(source, game.bird_rotate)
+    dst = rotate(source, -game.bird_rotate / math.pi * 180)
     h, w = dst.shape[:2]
     x, y = game.bird_position
     x, y = int(x), int(y)
