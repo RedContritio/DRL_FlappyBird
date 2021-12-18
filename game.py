@@ -1,11 +1,16 @@
 import math
+import os
+import re
 from typing import Tuple
 
 import numpy
 from imgs.bird import DEFAULT_BIRD_HEIGHT, DEFAULT_BIRD_WIDTH
 from imgs.pipe import PIPE_HAT_HEIGHT
+import random
 
+import time
 from objects.ground import GROUND_HEIGHT
+from prng import PRNG
 
 BIRD_LEFT_POSITION = 0.2
 BIRD_RIGHT_POSITION = 0.5
@@ -65,6 +70,10 @@ class AbstractPipe:
             return True
         return False
 
+
+def getRandomSeed():
+    return ''.join(random.sample('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 16))
+
 class Game:
     def __init__(self, window_size: Tuple[int]) -> None:
         self.window_size = window_size
@@ -72,6 +81,8 @@ class Game:
         self.status = GAME_STATE_INIT
         self.score = 0
         self.best_score = 0
+        self.operations = []
+        self.prng = PRNG()
         self.reset()
 
     def fitCamera(self):
@@ -93,11 +104,17 @@ class Game:
                 if self.score > self.best_score:
                     self.best_score = self.score
 
+        self.operations.append(0)
         self.updatePipe()
         self.fitCamera()
     
     def reset(self):
         AbstractPipe.g_id = 0
+        if len(self.operations) > 0:
+            self.saveOperations()
+        self.seed = getRandomSeed()
+        self.prng.seed(self.seed)
+        self.operations = []
         self.score = 0
         self.bird_speed = [BIRD_SPEED, 0]
         self.bird_world_position = [0, self.window_size[1] // 2]
@@ -115,8 +132,8 @@ class Game:
             last = self.pipes[-1]
 
     def makeRandomPipe(self, x: int, full_height: int, expect_interval_height: int):
-        h = int(((numpy.random.random() * 0.4 - 0.2) + 1) * expect_interval_height)
-        k = numpy.random.randint(PIPE_HAT_HEIGHT, full_height - h - PIPE_HAT_HEIGHT)
+        h = int(self.prng.random(0.8, 1.2) * expect_interval_height)
+        k = int(math.floor(self.prng.random(PIPE_HAT_HEIGHT, full_height - h - PIPE_HAT_HEIGHT)))
         return AbstractPipe(x, k, h, self.window_size[1])
 
     @property
@@ -142,6 +159,7 @@ class Game:
             if self.bird_speed[1] * BIRD_CLICK_SPEED < 0:
                 self.bird_speed[1] = 0
             self.bird_speed[1] += BIRD_CLICK_SPEED
+            self.operations[-1] += 1
         if self.status == GAME_STATE_INIT:
             self.status = GAME_STATE_RUNNING
         if self.status == GAME_STATE_END:
@@ -155,3 +173,10 @@ class Game:
     @property
     def dead(self):
         return self.status == GAME_STATE_END
+
+    def saveOperations(self):
+        
+        filename = time.strftime(f'%Y_%m_%d_%M_%I_%S__score__{self.score}.log', time.localtime())
+        with open(os.path.join('log', 'actions', filename), 'w') as f:
+            print(self.seed, file=f)
+            print(self.operations, file=f)

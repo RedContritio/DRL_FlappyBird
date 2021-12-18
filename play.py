@@ -1,5 +1,6 @@
 import pygame
 import sys
+from config import WINDOW_SIZE
 from game import Game
 from objects.failedscreen import FailedScreen
 from objects.background import BACKGROUND_COLOR, Background
@@ -9,7 +10,6 @@ from objects.pipe import Pipe
 from objects.scoreboard import ScoreBoard
 
 pygame.init()
-WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = (640, 480)
 screen = pygame.display.set_mode(WINDOW_SIZE)
 clock = pygame.time.Clock()
 
