@@ -18,13 +18,12 @@ class Bird(pygame.sprite.Sprite):
         
         self.images = [pygame.image.frombuffer(bird.tobytes(), bird.shape[:2][::-1], 'RGBA') for bird in bird_images]
         self.images.append(self.images[1])
-        self.angle = 0
         self.frame = 0
         
     def update(self, game: Game) -> None:
         self.position = game.bird_position
         self.speed = game.bird_speed
-        self.angle = math.atan2(self.speed[1], self.speed[0] * 2) # less rotate angle
+        self.angle = game.bird_rotate
         if game.running:
             if self.speed[1] < 0:
                 self.frame += 1

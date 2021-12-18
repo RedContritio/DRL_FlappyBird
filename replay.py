@@ -1,13 +1,22 @@
 import sys
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore, QtGui
 import numpy as np
 
-from config import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
+from config import FPS, WINDOW_HEIGHT, WINDOW_SIZE, WINDOW_WIDTH
+from game import Game
+from offscreen import render
+
+game = Game(WINDOW_SIZE)
 
 def timerEvent():
-    pass
+    global label_image
+    image_data = render(game)
+    image = QtGui.QImage(image_data, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH * 4, QtGui.QImage.Format_RGBA8888)
+
+    pixmap = QtGui.QPixmap.fromImage(image)
+    label_image.setPixmap(pixmap)
 
 def clickEvent(e: QtGui.QMouseEvent):
     print('click')
@@ -15,16 +24,12 @@ def clickEvent(e: QtGui.QMouseEvent):
 
 app = QApplication(sys.argv)
 
-image_data = np.zeros((WINDOW_HEIGHT, WINDOW_WIDTH, 3), dtype=np.ubyte)
-image_data[:, :, 1] = 255
-image = QtGui.QImage(image_data, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH * 3, QtGui.QImage.Format_RGB888)
-
-pixmap = QtGui.QPixmap.fromImage(image)
 
 label_image = QtWidgets.QLabel()
 label_image.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
-label_image.setPixmap(pixmap)
+label_image.setWindowTitle('flappy Bird Replay')
 label_image.show()
+timerEvent()
 
 label_image.mousePressEvent = clickEvent
 

@@ -81,6 +81,7 @@ class Game:
         self.status = GAME_STATE_INIT
         self.score = 0
         self.best_score = 0
+        self.bird_rotate = 0
         self.operations = []
         self.prng = PRNG()
         self.reset()
@@ -96,6 +97,7 @@ class Game:
             for i in range(2):
                 self.bird_world_position[i] += self.bird_speed[i]
             self.bird_speed[1] += WORLD_GRAVITY
+            self.bird_rotate = math.atan2(self.bird_speed[1], self.bird_speed[0] * 2) # less rotate angle
             if self.checkCollision():
                 self.status = GAME_STATE_END
             passed_pipes = [p for p in self.pipes if p.right < self.bird_world_position[0]]
