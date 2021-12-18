@@ -8,7 +8,8 @@ from imgs.background import BASE_UNIT_WIDTH, get_base
 from imgs.bird import get_birds
 from imgs.pipe import make_pipe
 from imgs.scoreboard import make_scoreboard
-from objects.background import BACKGROUND_COLOR
+# from objects.background import BACKGROUND_COLOR
+BACKGROUND_COLOR = (0, 0, 0)
 from objects.bird import BIRD_FRAME_LENGTH
 from objects.ground import GROUND_HEIGHT
 
@@ -82,7 +83,9 @@ def renderbird(img, game: Game):
     h, w = dst.shape[:2]
     x, y = game.bird_position
     x, y = int(x), int(y)
-    mix(img[y:y+h, x:x+w], dst)
+
+    l, t, w, h = getRenderRect([0, 0, img.shape[1], img.shape[0]], [x, y, w, h])
+    mix(img[t: t+h, l:l+w], dst[t-y: t+h-y, l-x: l+w-x])
 
 def render(game: Game):
     img = np.zeros((WINDOW_HEIGHT, WINDOW_WIDTH, 4), dtype=np.ubyte)

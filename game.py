@@ -156,13 +156,15 @@ class Game:
         
         return False
 
+    def action_fly(self):
+        if self.bird_speed[1] * BIRD_CLICK_SPEED < 0:
+            self.bird_speed[1] = 0
+        self.bird_speed[1] += BIRD_CLICK_SPEED
+        self.operations[-1] += 1
 
     def click(self):
         if self.status == GAME_STATE_RUNNING:
-            if self.bird_speed[1] * BIRD_CLICK_SPEED < 0:
-                self.bird_speed[1] = 0
-            self.bird_speed[1] += BIRD_CLICK_SPEED
-            self.operations[-1] += 1
+            self.action_fly()
         if self.status == GAME_STATE_INIT:
             self.start()
         if self.status == GAME_STATE_END:
@@ -186,9 +188,19 @@ class Game:
         self.status = GAME_STATE_RUNNING
 
     def saveOperations(self):
-        if self.replay_flag:
-            return
-        filename = time.strftime(f'%Y_%m_%d_%M_%I_%S__score__{self.score}.log', time.localtime())
-        with open(os.path.join('log', 'actions', filename), 'w') as f:
-            print(self.seed, file=f)
-            print(self.operations, file=f)
+        timestr = time.strftime(f'%Y_%m_%d_%M_%I_%S__score__{self.score}', time.localtime())
+        filename = f'{timestr}.log'
+        dirpath = os.path.join('log', 'actions')
+        if not os.path.exists(dirpath) or not os.path.isdir(dirpath):
+            if not os.path.exists('log') or not os.path.isdir('log'):
+                os.mkdir('log')
+            os.mkdir(dirpath)
+        if not self.replay_flag:
+            with open(os.path.join(dirpath, filename), 'w') as f:
+                print(self.seed, file=f)
+                print(self.operations, file=f)
+        else:
+            print(self.operations)
+        with open(os.path.join('log', 'scores.txt'), 'a') as f:
+            print(timestr, file=f)
+            print(f'{self.bird_world_position}', file=f)
