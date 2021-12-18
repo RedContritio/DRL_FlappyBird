@@ -1,7 +1,7 @@
 import pygame
 import sys
 from game import Game
-from objects.FailedScreen import FailedScreen
+from objects.failedscreen import FailedScreen
 from objects.background import BACKGROUND_COLOR, Background
 
 from objects.bird import Bird

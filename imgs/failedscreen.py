@@ -1,11 +1,10 @@
-
 from typing import List, Tuple
 import numpy as np
 import cv2
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-def make_Failed(size: Tuple[int], score: int, best_score: int):
+def make_failedscreen(size: Tuple[int], score: int, best_score: int):
     img = np.zeros((size[0], size[1], 4), dtype=np.ubyte)
 
     img[:, :, 3] = 127
