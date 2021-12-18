@@ -1,7 +1,7 @@
 from typing import Tuple
 import pygame
 
-from imgs.failed import make_failedscreen
+from imgs.failedscreen import make_failedscreen
 
 class FailedScreen(pygame.sprite.Sprite):
     def __init__(self, window_size: Tuple[int], score: int, best_score: int = 0) -> None:
