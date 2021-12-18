@@ -78,10 +78,8 @@ class Game:
     def __init__(self, window_size: Tuple[int], replay_flag: bool = False) -> None:
         self.window_size = window_size
         self.bird_xrange = [int(BIRD_LEFT_POSITION * window_size[0]), int(BIRD_RIGHT_POSITION * window_size[0])]
-        self.status = GAME_STATE_INIT
         self.score = 0
         self.best_score = 0
-        self.bird_rotate = 0
         self.operations = []
         self.prng = PRNG()
         self.replay_flag = replay_flag
@@ -106,19 +104,22 @@ class Game:
                 self.score = passed_pipes[-1].id + 1
                 if self.score > self.best_score:
                     self.best_score = self.score
+            self.operations.append(0)
 
-        self.operations.append(0)
         self.updatePipe()
         self.fitCamera()
     
-    def reset(self):
+    def reset(self, seed = getRandomSeed()):
         AbstractPipe.g_id = 0
         if len(self.operations) > 0:
             self.saveOperations()
-        self.seed = getRandomSeed()
+        self.seed = seed
+        print(self.seed)
         self.prng.seed(self.seed)
+        self.status = GAME_STATE_INIT
         self.operations = []
         self.score = 0
+        self.bird_rotate = 0
         self.bird_speed = [BIRD_SPEED, 0]
         self.bird_world_position = [0, self.window_size[1] // 2]
         self.camera_rect = [0, 0, self.window_size[0], self.window_size[1]]

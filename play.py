@@ -10,6 +10,7 @@ from objects.pipe import Pipe
 from objects.scoreboard import ScoreBoard
 
 pygame.init()
+pygame.display.set_caption('flappy Bird Play')
 screen = pygame.display.set_mode(WINDOW_SIZE)
 clock = pygame.time.Clock()
 
