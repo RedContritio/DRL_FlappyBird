@@ -22,10 +22,10 @@ PIPE_SPACING = 150
 
 PIPE_SAFE_MARGIN = 2 * (PIPE_WIDTH + PIPE_SPACING)
 
-PIPE_INTERVAL_MIN_HEIGHT = 60
+PIPE_INTERVAL_MIN_HEIGHT = 70
 
 # less means harder
-GAME_DIFFICULT = 2
+GAME_DIFFICULT = 1.8
 
 class AbstractPipe:
     g_id = 0
@@ -115,8 +115,9 @@ class Game:
             last = self.pipes[-1]
 
     def makeRandomPipe(self, x: int, full_height: int, expect_interval_height: int):
-        k = numpy.random.randint(PIPE_HAT_HEIGHT, full_height - expect_interval_height - PIPE_HAT_HEIGHT)
-        return AbstractPipe(x, k, expect_interval_height, self.window_size[1])
+        h = int(((numpy.random.random() * 0.4 - 0.2) + 1) * expect_interval_height)
+        k = numpy.random.randint(PIPE_HAT_HEIGHT, full_height - h - PIPE_HAT_HEIGHT)
+        return AbstractPipe(x, k, h, self.window_size[1])
 
     @property
     def bird_position(self):
