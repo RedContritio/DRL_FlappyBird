@@ -122,7 +122,7 @@ class Game:
         self.bird_speed = [BIRD_SPEED, 0]
         self.bird_world_position = [0, self.window_size[1] // 2]
         self.camera_rect = [0, 0, self.window_size[0], self.window_size[1]]
-        self.pipes = [self.makeRandomPipe(self.bird_position[0] + PIPE_SAFE_MARGIN, self.window_size[1] - GROUND_HEIGHT, PIPE_INTERVAL_MIN_HEIGHT * GAME_DIFFICULT)]
+        self.pipes = [self.makeRandomPipe(self.bird_world_position[0] + PIPE_SAFE_MARGIN, self.window_size[1] - GROUND_HEIGHT, PIPE_INTERVAL_MIN_HEIGHT * GAME_DIFFICULT)]
         self.fitCamera()
 
     def updatePipe(self):
@@ -188,7 +188,7 @@ class Game:
         self.status = GAME_STATE_RUNNING
 
     def saveOperations(self):
-        timestr = time.strftime(f'%Y_%m_%d_%M_%I_%S__score__{self.score}', time.localtime())
+        timestr = time.strftime(f'%Y_%m_%d_%I_%M_%S__score__{self.score}', time.localtime())
         filename = f'{timestr}.log'
         dirpath = os.path.join('log', 'actions')
         if not os.path.exists(dirpath) or not os.path.isdir(dirpath):
