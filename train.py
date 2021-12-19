@@ -6,7 +6,7 @@ from typing import List
 import cv2
 import sys
 from network.BrainDQN_Nature import BrainDQN
-from game import Game
+from game import PIPE_SAFE_MARGIN, Game
 import numpy as np
 from config import WINDOW_SIZE
 from offscreen import render
@@ -20,7 +20,7 @@ def game_stepin(game: Game, action: List[int]):
     if action[0] < action[1]:
         game.action_fly()
     game.update()
-    ret = (render(game), game.bird_world_position[0], game.dead)
+    ret = (render(game), game.bird_world_position[0] + game.score * PIPE_SAFE_MARGIN, game.dead)
     if game.dead:
         game.reset()
         game.start()
