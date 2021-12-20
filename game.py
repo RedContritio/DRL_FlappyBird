@@ -189,7 +189,7 @@ class Game:
         self.status = GAME_STATE_RUNNING
 
     def saveOperations(self):
-        timestr = time.strftime(f'%Y_%m_%d_%I_%M_%S__score__{self.score}', time.localtime())
+        timestr = time.strftime(f'%Y_%m_%d_%H_%M_%S__score__{self.score}', time.localtime())
         filename = f'{timestr}.log'
         dirpath = os.path.join('log', 'actions')
         if not os.path.exists(dirpath) or not os.path.isdir(dirpath):
@@ -204,4 +204,4 @@ class Game:
             print(self.operations)
         with open(os.path.join('log', 'scores.txt'), 'a') as f:
             print(timestr, file=f)
-            print(f'{self.bird_world_position}', file=f)
+            print(f'{self.seed} {self.bird_world_position}', file=f)
