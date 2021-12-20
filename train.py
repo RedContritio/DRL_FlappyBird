@@ -20,7 +20,7 @@ def game_stepin(game: Game, action: List[int]):
     if action[0] < action[1]:
         game.action_fly()
     game.update()
-    ret = [render(game), game.bird_world_position[0] + game.score * PIPE_SAFE_MARGIN, game.dead]
+    ret = [render(game), game.score, game.dead]
     if game.dead:
         game.reset(getRandomSeed())
         game.start()
