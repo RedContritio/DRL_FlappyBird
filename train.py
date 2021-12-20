@@ -30,9 +30,8 @@ def game_stepin(game: Game, action: List[int]):
 
 # preprocess raw image to 80*80 gray image
 def preprocess(observation):
-	observation = cv2.cvtColor(cv2.resize(observation, (80, 80)), cv2.COLOR_BGR2GRAY)
-	ret, observation = cv2.threshold(observation,1,255,cv2.THRESH_BINARY)
-	return np.reshape(observation,(80,80,1))
+	ob = image_preprocess(observation)
+	return np.reshape(observation, ob)
 
 def playFlappyBird():
 	# Step 1: init BrainDQN
@@ -46,8 +45,7 @@ def playFlappyBird():
 	# Step 3.1: obtain init state
 	action0 = np.array([1,0])  # do nothing
 	observation0, reward0, terminal = game_stepin(game, action0)
-	observation0 = cv2.cvtColor(cv2.resize(observation0, (80, 80)), cv2.COLOR_BGR2GRAY)
-	ret, observation0 = cv2.threshold(observation0,1,255,cv2.THRESH_BINARY)
+	observation0 = image_preprocess(observation0)
 	brain.setInitState(observation0)
 
 	# Step 3.2: run the game
