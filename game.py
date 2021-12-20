@@ -205,3 +205,4 @@ class Game:
         with open(os.path.join('log', 'scores.txt'), 'a') as f:
             print(timestr, file=f)
             print(f'{self.seed} {self.bird_world_position}', file=f)
+            print([p.x for p in self.pipes], file=f)
