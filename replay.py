@@ -4,10 +4,17 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore, QtGui
 import numpy as np
 import os
+import cv2
 
 from config import FPS, WINDOW_HEIGHT, WINDOW_SIZE, WINDOW_WIDTH
 from game import Game
 from offscreen import render
+
+_image_togray = lambda img: cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
+_image_resize = lambda img: cv2.resize(img, (80, 80))
+_image_threshold = lambda img: cv2.threshold(img, 1, 255, cv2.THRESH_BINARY)[1]
+image_preprocess = lambda img: _image_threshold(_image_togray(_image_resize(img)))
+
 
 SAVE_DIR = os.path.join('log', 'actions')
 SAVE_LISTS = os.listdir(SAVE_DIR)
@@ -25,7 +32,11 @@ current_frame = 0
 def timerEvent():
     global label_image, current_frame
     image_data = render(game)
-    image = QtGui.QImage(image_data, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH * 4, QtGui.QImage.Format_RGBA8888)
+    # image_data = image_preprocess(image_data)
+    h, w = image_data.shape[:2]
+    c = 1 if len(image_data.shape) < 3 else image_data.shape[2]
+    image = QtGui.QImage(image_data, w, h, w * c, QtGui.QImage.Format_RGBA8888)
+    # image = QtGui.QImage(image_data, w, h, w * c, QtGui.QImage.Format_Grayscale8)
 
     pixmap = QtGui.QPixmap.fromImage(image)
     label_image.setPixmap(pixmap)
@@ -34,8 +45,9 @@ def timerEvent():
         game.start()
         current_frame = 0
     elif game.running:
-        for _ in range(operations[current_frame]):
-            game.click()
+        if len(operations) > current_frame:
+            for _ in range(operations[current_frame]):
+                game.click()
         current_frame += 1
         game.update()
 
