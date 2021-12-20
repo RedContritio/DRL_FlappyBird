@@ -31,7 +31,7 @@ def game_stepin(game: Game, action: List[int]):
 # preprocess raw image to 80*80 gray image
 def preprocess(observation):
 	ob = image_preprocess(observation)
-	return np.reshape(observation, ob)
+	return np.reshape(ob, (80, 80, 1))
 
 def playFlappyBird():
 	# Step 1: init BrainDQN
