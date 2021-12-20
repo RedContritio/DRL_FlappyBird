@@ -20,12 +20,13 @@ def game_stepin(game: Game, action: List[int]):
     if action[0] < action[1]:
         game.action_fly()
     game.update()
-    ret = (render(game), game.bird_world_position[0] + game.score * PIPE_SAFE_MARGIN, game.dead)
+    ret = [render(game), game.bird_world_position[0] + game.score * PIPE_SAFE_MARGIN, game.dead]
     if game.dead:
         game.reset(getRandomSeed())
         game.start()
         game.update()
-    return ret
+        ret[1] = -1
+    return tuple(ret)
 
 # preprocess raw image to 80*80 gray image
 def preprocess(observation):
