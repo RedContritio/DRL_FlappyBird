@@ -66,6 +66,10 @@ class AbstractPipe:
     def right(self):
         return self.x + self.width
 
+    @property
+    def xmid(self):
+        return self.x + self.width // 2
+
     def hit(self, y: int):
         if y < self.interval_y or y >= self.interval_y + self.interval_height:
             return True
@@ -98,7 +102,7 @@ class Game:
                 self.bird_world_position[i] += self.bird_speed[i]
             self.bird_speed[1] += WORLD_GRAVITY
             self.bird_rotate = math.atan2(self.bird_speed[1], self.bird_speed[0] * 2) # less rotate angle
-            passed_pipes = [p for p in self.pipes if p.right < self.bird_world_position[0]]
+            passed_pipes = [p for p in self.pipes if p.xmid <= self.bird_world_xmid]
             if len(passed_pipes) > 0:
                 self.score = passed_pipes[-1].id + 1
                 if self.score > self.best_score:
@@ -143,6 +147,10 @@ class Game:
     @property
     def bird_position(self):
         return (self.bird_world_position[0] - self.camera_rect[0], self.bird_world_position[1] - self.camera_rect[1])
+
+    @property
+    def bird_world_xmid(self):
+        return self.bird_world_position[0] + DEFAULT_BIRD_WIDTH // 2
 
     def checkCollision(self):
         bird_l, bird_r = self.bird_world_position[0], self.bird_world_position[0] + DEFAULT_BIRD_WIDTH
@@ -204,5 +212,5 @@ class Game:
             print(self.operations)
         with open(os.path.join('log', 'scores.txt'), 'a') as f:
             print(timestr, file=f)
-            print(f'{self.seed} {self.bird_world_position}', file=f)
             print([p.x for p in self.pipes], file=f)
+            print(f'{self.seed} {self.bird_world_xmid, self.bird_world_position[1]}', file=f)

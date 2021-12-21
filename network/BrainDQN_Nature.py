@@ -12,9 +12,9 @@ from collections import deque
 # Hyper Parameters:
 FRAME_PER_ACTION = 4
 GAMMA = 0.99 # decay rate of past observations
-OBSERVE = 100. # timesteps to observe before training
+OBSERVE = 500. # timesteps to observe before training
 EXPLORE = 50000. # frames over which to anneal epsilon
-FINAL_EPSILON = 1e-2 #0.001 # final value of epsilon
+FINAL_EPSILON = 1e-4 #0.001 # final value of epsilon
 INITIAL_EPSILON = 1e-1 #0.01 # starting value of epsilon
 REPLAY_MEMORY = 50000 # number of previous transitions to remember
 BATCH_SIZE = 32 # size of minibatch
