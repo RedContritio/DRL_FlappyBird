@@ -70,6 +70,10 @@ class AbstractPipe:
     def xmid(self):
         return self.x + self.width // 2
 
+    @property
+    def ymid(self):
+        return self.interval_y + self.interval_height // 2
+
     def hit(self, y: int):
         if y < self.interval_y or y >= self.interval_y + self.interval_height:
             return True
@@ -145,6 +149,10 @@ class Game:
         return AbstractPipe(x, k, h, self.window_size[1])
 
     @property
+    def next_pipe(self):
+        return [p for p in self.pipes if p.xmid > self.bird_world_xmid][0]
+
+    @property
     def bird_position(self):
         return (self.bird_world_position[0] - self.camera_rect[0], self.bird_world_position[1] - self.camera_rect[1])
 
@@ -212,5 +220,14 @@ class Game:
             print(self.operations)
         with open(os.path.join('log', 'scores.txt'), 'a') as f:
             print(timestr, file=f)
-            print([p.x for p in self.pipes], file=f)
             print(f'{self.seed} {self.bird_world_xmid, self.bird_world_position[1]}', file=f)
+            print(f'reward {self.reward} = {self.bird_world_position[0] / 180} + {self.score} - {self.bird_y_diff_to_next_pipe / self.window_size[1]}', file=f)
+            print([p.x for p in self.pipes], file=f)
+
+    @property
+    def bird_y_diff_to_next_pipe(self):
+        return abs(self.bird_world_position[1] - self.next_pipe.ymid)
+
+    @property
+    def reward(self):
+        return self.bird_world_position[0] / 180 + self.score - self.bird_y_diff_to_next_pipe / self.window_size[1]

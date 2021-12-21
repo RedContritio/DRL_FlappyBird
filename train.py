@@ -9,7 +9,7 @@ import sys
 from network.BrainDQN_Nature import BrainDQN
 from game import PIPE_SAFE_MARGIN, Game, getRandomSeed
 import numpy as np
-from config import WINDOW_SIZE
+from config import WINDOW_HEIGHT, WINDOW_SIZE
 from offscreen import render
 
 _image_togray = lambda img: cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
@@ -21,7 +21,8 @@ def game_stepin(game: Game, action: List[int]):
     if action[0] < action[1]:
         game.action_fly()
     game.update()
-    ret = [render(game), game.bird_world_position[0] / 180. + game.score, game.dead]
+    
+    ret = [render(game), game.reward, game.dead]
     if game.dead:
         game.reset(getRandomSeed())
         game.start()
