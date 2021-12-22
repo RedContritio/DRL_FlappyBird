@@ -221,7 +221,7 @@ class Game:
         with open(os.path.join('log', 'scores.txt'), 'a') as f:
             print(timestr, file=f)
             print(f'{self.seed} ({self.bird_world_xmid:.3f}, {self.bird_world_position[1]:.3f}) to ({self.next_pipe.x:.3f}, {self.next_pipe.ymid:.3f})', file=f)
-            print(f'reward {self.reward:.3f} = {self.bird_world_position[0] / 180:.3f} + {self.score:.3f} - {2 * self.bird_y_diff_to_next_pipe / self.window_size[1]:.3f}', file=f)
+            print(f'reward {self.reward:.3f} = {self.reward_x:.3f} + {self.score:.3f} + {self.reward_y:.3f}', file=f)
             # print([p.x for p in self.pipes], file=f)
 
     @property
@@ -229,5 +229,14 @@ class Game:
         return abs(self.bird_world_position[1] - self.next_pipe.ymid)
 
     @property
+    def reward_x(self):
+        r1 = ((self.bird_world_position[0] % 180) / 180)
+        return self.bird_world_position[0] // 180 + r1 * r1 * r1
+
+    @property
+    def reward_y(self):
+        return -2 * (self.bird_y_diff_to_next_pipe / self.window_size[1])
+
+    @property
     def reward(self):
-        return self.bird_world_position[0] / 180 + self.score - 2 * self.bird_y_diff_to_next_pipe / self.window_size[1]
+        return self.reward_x + self.score + self.reward_y
