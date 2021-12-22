@@ -12,6 +12,9 @@ import numpy as np
 from config import WINDOW_HEIGHT, WINDOW_SIZE
 from offscreen import render
 
+get_seed = lambda: 'ZdfkR9jzpSli7uVt'
+# get_seed = getRandomSeed 
+
 _image_togray = lambda img: cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
 _image_resize = lambda img: cv2.resize(img, (80, 80))
 _image_threshold = lambda img: cv2.threshold(img, 1, 255, cv2.THRESH_BINARY)[1]
@@ -24,7 +27,8 @@ def game_stepin(game: Game, action: List[int]):
     
     ret = [render(game), game.reward, game.dead]
     if game.dead:
-        game.reset(getRandomSeed())
+        # game.reset(getRandomSeed())
+        game.reset(get_seed())
         game.start()
         game.update()
         ret[1] = -1
@@ -41,6 +45,7 @@ def playFlappyBird():
 	brain = BrainDQN(actions)
 	# Step 2: init Flappy Bird Game
 	game = Game(WINDOW_SIZE, True)
+	game.reset(get_seed())
 	game.start()
 	game.update()
 	# Step 3: play game
