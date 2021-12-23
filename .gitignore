@@ -1,2 +1,4 @@
 __pycache__
 log
+saved_networks/network-dqn-*
+saved_networks.bak
