@@ -12,8 +12,8 @@ import numpy as np
 from config import WINDOW_HEIGHT, WINDOW_SIZE
 from offscreen import render
 
-get_seed = lambda: 'ZdfkR9jzpSli7uVt'
-# get_seed = getRandomSeed 
+# get_seed = lambda: 'ZdfkR9jzpSli7uVt'
+get_seed = getRandomSeed 
 
 _image_togray = lambda img: cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
 _image_resize = lambda img: cv2.resize(img, (80, 80))
@@ -31,7 +31,7 @@ def game_stepin(game: Game, action: List[int]):
         game.reset(get_seed())
         game.start()
         game.update()
-        ret[1] = -1
+        ret[1] = min(-1, game.reward)
     return tuple(ret)
 
 # preprocess raw image to 80*80 gray image
