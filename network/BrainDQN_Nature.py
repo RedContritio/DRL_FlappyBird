@@ -12,7 +12,7 @@ from collections import deque
 # Hyper Parameters:
 FRAME_PER_ACTION = 2
 GAMMA = 0.99 # decay rate of past observations
-OBSERVE = 500. # timesteps to observe before training
+OBSERVE = 100. # timesteps to observe before training
 EXPLORE = 50000. # frames over which to anneal epsilon
 FINAL_EPSILON = 1e-4 #0.001 # final value of epsilon
 INITIAL_EPSILON = 1e-2 #0.01 # starting value of epsilon
