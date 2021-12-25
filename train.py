@@ -14,8 +14,8 @@ from offscreen import render
 
 # get_seed = lambda: 'ZdfkR9jzpSli7uVt'
 # get_seed = lambda: 'b5gMnJN0EHFKQiez'
-get_seed = lambda: 'DLjCZhQE6Hln8JKv'
-# get_seed = getRandomSeed 
+# get_seed = lambda: 'DLjCZhQE6Hln8JKv'
+get_seed = getRandomSeed 
 
 _image_togray = lambda img: cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
 _image_resize = lambda img: cv2.resize(img, (80, 80))
